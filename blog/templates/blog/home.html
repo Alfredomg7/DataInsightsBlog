@@ -1,0 +1,27 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6">
+                <h2 class="m-3">Recent Articles</h2>
+            </div>
+            {% if user.is_authenticated %}
+            <div class="col-xs-6">
+                <a href="{% url 'article_create' %}" class="btn btn-primary m-3 float-left">Create article</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <hr>
+    {% for article in articles %}
+        <h3><a href="{% url 'article_detail' article.pk %}">{{ article.title }}</a></h3>
+        <p class="h6">{{ article.content|truncatewords:50 }}</p>
+        <p>by {{ article.author.username }} on {{ article.created_at }}</p>
+        <hr>
+    {% endfor %}
+    {% if not articles %}
+        <p class="h5">There are no articles yet 😓</p>
+    {% endif %}
+    </div>
+{% endblock %}
