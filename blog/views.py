@@ -61,6 +61,27 @@ def article_delete(request, pk):
         return redirect('home')
     return render(request, 'blog/article_confirm_delete.html', {'article': article})
 
+@login_required
+def comment_edit(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    article_pk = comment.article.pk
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            comment = form.save()
+            return redirect('article_detail', pk=article_pk)
+    form = CommentForm(instance=comment)
+    return render(request, 'blog/comment_form.html', {'form': form})
+
+@login_required
+def comment_delete(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    article_pk = comment.article.pk
+    if request.method == 'POST':
+        comment.delete()
+        return redirect('article_detail', pk=article_pk)
+    return render(request, 'blog/comment_confirm_delete.html', {'comment': comment})
+
 # User views
 class SignUpView(CreateView):
     form_class = UserCreationForm

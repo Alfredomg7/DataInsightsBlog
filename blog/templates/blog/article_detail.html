@@ -29,7 +29,18 @@
                             <small>{{ comment.created_at }}</small>
                         </div>
                         <p class="mb-1">{{ comment.content }}</p>
-                    </div>
+
+                    {% if user.is_authenticated and user == comment.author %}
+                        <div class="btn-group" role="group">
+                            <a href="{% url 'comment_edit' comment.pk %}" class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'comment_delete' comment.pk %}" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
                 {% endfor %}
             </div>
         {% else %}

@@ -77,3 +77,16 @@ class CommentTests(TestCase):
         response = self.client.get(reverse('article_detail', args=[self.article.pk]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Test comment.')
+
+    def test_comment_edit(self):
+        response = self.client.post(reverse('comment_edit', args=[self.comment.pk]), {
+            'content': 'Updated comment.',
+        })
+        self.assertEqual(response.status_code, 302)
+        self.comment.refresh_from_db()
+        self.assertEqual(self.comment.content, 'Updated comment.')
+    
+    def test_comment_delete(self):
+        response = self.client.post(reverse('comment_delete', args=[self.comment.pk]))
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Comment.objects.filter(pk=self.comment.pk).exists())
