@@ -1,15 +1,21 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h2>{{ form.instance.pk|yesno:"Edit Article,Create Article" }}</h2>
-            <form method="post">
+            <form method="post" class="needs-validation">
                 {% csrf_token %}
-                {{ form.as_p }}
+                <div class="form-group">
+                    <label for="id_title">Title:</label>
+                    <input type="text" id="id_title" name="title" class="form-control" placeholder="Write title here..." value="{{ form.title.value }}">
+                </div>
+                <div class="form-group">
+                    <label for="id_content">Content:</label>
+                    <textarea id="id_content" name="content" class="form-control" rows="12" placeholder="Write article here...">{{ form.content.value }}</textarea>
+                </div>
                 <div class="text-center">
-                    <button type="submit" class="btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </form>
             <div class="text-center">
@@ -17,5 +23,4 @@
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

@@ -1,11 +1,58 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-    <h2>{{ article.title }}</h2>
-    <p class="h6">{{ article.content }}</p>
-    <p>By {{ article.author.username }} on {{ article.created_at }}</p>
+    <!-- Article section -->
+    <h2 class="display-5">{{ article.title }}</h2>
+    <div class="mb-2">
+        <p class="lead">{{ article.content }}</p>
+    </div>
+    <p class="text-muted">By <strong>{{ article.author.username }}</strong> on <time datetime="{{ article.created_at }}">{{ article.created_at }}</time></p>
+    
+    <!-- Edit and delete article buttons -->
     {% if user.is_authenticated and user == article.author %}
-        <a href="{% url 'article_edit' article.pk %}" class="btn btn-warning">Edit</a>
-        <a href="{% url 'article_delete' article.pk %}" class="btn btn-danger">Delete</a>
+        <div class="btn-group mb-3" role="group">
+            <a href="{% url 'article_edit' article.pk %}" class="btn btn-info">Edit</a>
+            <a href="{% url 'article_delete' article.pk %}" class="btn btn-danger">Delete</a>
+        </div>
     {% endif %}
+    <hr>
+    
+    <!-- Comments section -->
+    <div class="mb-2">
+        <h4>Comments</h4>
+        {% if comments %}
+            <div class="list-group my-3">
+                {% for comment in comments %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ comment.author.username }}</h5>
+                            <small>{{ comment.created_at }}</small>
+                        </div>
+                        <p class="mb-1">{{ comment.content }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">No comments yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Add comment form -->
+    {% if user.is_authenticated %}
+        <div class="mb-3">
+            <h4>Add a comment:</h5>
+            <form method="post" class="needs-validation">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_content">Comment:</label>
+                    <textarea id="id_content" name="content" class="form-control" rows="4" placeholder="Write your comment here..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>   
+            </form>
+        </div>
+    {% else %}
+        <div class="alert alert-info mb-3" role="alert">
+            <strong><a href="{% url 'login' %}">Log in</a></strong> to add a comment.
+        </div>
+    {% endif %}    
 {% endblock %}
